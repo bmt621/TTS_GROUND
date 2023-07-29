@@ -1,0 +1,35 @@
+Audio_Configs:
+    max_audio_len: 10
+    num_mels: 80
+    n_fft: 1024
+    hop_len: 256
+    win_len: 1024
+
+Text_Configs:
+    max_len:
+
+Training_Configs:
+    train_batch_size: 28
+    test_batch_size: 8
+    epoch: 500
+    optimizer: AdamW
+    lr: 0.0001
+    scheduler: Cosine
+
+EncDec_Configs:
+    embed_dim: 768
+    n_head: 8
+    n_encoder_layer: 3
+    n_decoder_layer: 3
+    sinusoid: False
+    max_blocksize: 512
+    vocab_size: 20
+    d_ff: 2048
+    dropout: 0.1
+    pad_idx: 0
+
+Postnet_Configs:
+    postnet_embedding_dim: 512
+    postnet_kernel_size: 5
+    postnet_n_convolutions: 5
+    
