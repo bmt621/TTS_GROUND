@@ -4,17 +4,23 @@ Audio_Configs:
     n_fft: 1024
     hop_len: 256
     win_len: 1024
+    sampling_rate: 16000
+    
 
 Text_Configs:
-    max_len:
+    tokenizer_path: TTSTokenizer    
 
 Training_Configs:
-    train_batch_size: 28
+    train_batch_size: 30
     test_batch_size: 8
     epoch: 500
     optimizer: AdamW
     lr: 0.0001
     scheduler: Cosine
+    train_path: train_df.csv
+    test_path: test_df.csv
+    weight: 8.0
+    betas: [0.9, 0.98]
 
 EncDec_Configs:
     embed_dim: 768
@@ -23,10 +29,11 @@ EncDec_Configs:
     n_decoder_layer: 3
     sinusoid: False
     max_blocksize: 512
-    vocab_size: 20
+    vocab_size: 30112
     d_ff: 2048
     dropout: 0.1
-    pad_idx: 0
+    pad_idx: 1
+    max_length: 2000
 
 Postnet_Configs:
     postnet_embedding_dim: 512

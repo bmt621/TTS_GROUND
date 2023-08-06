@@ -148,15 +148,17 @@ class TacotronSTFT(torch.nn.Module):
         -------
         mel_output: torch.FloatTensor of shape (B, n_mel_channels, T)
         """
-        assert(torch.min(y.data) >= -1)
-        assert(torch.max(y.data) <= 1)
+        
+        """assert(torch.min(y.data) >= -1)
+        assert(torch.max(y.data) <= 1)"""
 
         magnitudes, phases = self.stft_fn.transform(y)
         magnitudes = magnitudes.data
+        
         mel_output = torch.matmul(self.mel_basis, magnitudes)
         mel_output = self.spectral_normalize(mel_output)
+        
         return mel_output
-
 
 
 def dynamic_range_compression(x, C=1, clip_val=1e-5):
@@ -166,6 +168,9 @@ def dynamic_range_compression(x, C=1, clip_val=1e-5):
     C: compression factor
     """
     return torch.log(torch.clamp(x, min=clip_val) * C)
+
+def dynamic_complex_compression():
+    pass
 
 def dynamic_range_decompression(x, C=1):
     """
@@ -228,7 +233,7 @@ def window_sumsquare(window, n_frames, hop_length=200, win_length=800,
     return x
 
 
-def resample_audio(data, orig_sr, target_sample_rate):
+def resample_this_audio(data, orig_sr, target_sample_rate):
     # Read the audio file
 
     # Calculate the resampling ratio
@@ -247,12 +252,13 @@ def load_wav_to_torch(full_path, sr):
     sampling_rate, data = read(full_path)
     
     if sampling_rate != sr:
-        data, _ = resample_audio(data,sampling_rate,sr)
+        data, _ = resample_this_audio(data,sampling_rate,sr)
 
     return torch.FloatTensor(data.astype(np.float32))
 
 
 def get_mel(stft,filename,sampling_rate,max_wav_value=32768.0,load_mel_from_disk=False):
+        
         if not load_mel_from_disk:
             audio = load_wav_to_torch(filename, sampling_rate)
             audio_norm = audio / max_wav_value
@@ -260,7 +266,9 @@ def get_mel(stft,filename,sampling_rate,max_wav_value=32768.0,load_mel_from_disk
             audio_norm = torch.autograd.Variable(audio_norm, requires_grad=False)
             melspec = stft.mel_spectrogram(audio_norm)
             melspec = torch.squeeze(melspec, 0)
+            
         else:
+            
             melspec = torch.from_numpy(np.load(filename))
             assert melspec.size(0) == stft.n_mel_channels, (
                 'Mel dimension mismatch: given {}, expected {}'.format(
@@ -359,3 +367,5 @@ def process_files_with_silence(
                 future.result()
             except Exception as e:
                 print(f"Error processing audio: {e}")
+
+    

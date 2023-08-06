@@ -19,10 +19,8 @@ class TTS_Loss(nn.Module):
 
         mel_loss = post_loss + mel_after
 
-        gate_loss = self.gate_loss_fn(gate_out.view(-1,1),gate_target.view(-1,1))
+        gate_loss = self.gate_loss_fn(gate_out.reshape(-1,1),gate_target.reshape(-1,1).float())
 
         total_loss = mel_loss + gate_loss
 
         return total_loss
-
-
